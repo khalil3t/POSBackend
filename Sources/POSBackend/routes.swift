@@ -48,6 +48,11 @@ let salesStore = SalesStore()
 // MARK: - Routes
 
 func routes(_ app: Application) throws {
+    // ✅ Health check route for Render
+    app.get("health") { req in
+        return "OK"
+    }
+
     app.get("hello") { req async -> String in
         "Hello, world!"
     }

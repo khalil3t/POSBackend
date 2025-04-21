@@ -1,6 +1,6 @@
 //
-// routes.swift
-// POSBackend
+//  routes.swift
+//  POSBackend
 //
 
 import Vapor
@@ -54,17 +54,18 @@ let salesStore = SalesStore()
 
 func routes(_ app: Application) throws {
     
-    // ✅ Render health check endpoint
+    // Health check for Render
     app.get("health") { req async -> String in
         return "OK"
     }
 
-    // Hello test route
+    // Hello test
     app.get("hello") { req async -> String in
         "Hello, world!"
     }
 
-    // MARK: - Product Endpoints
+    // MARK: - Products
+
     app.get("products") { req async -> [Product] in
         await productStore.getAll()
     }
@@ -76,15 +77,16 @@ func routes(_ app: Application) throws {
         return .ok
     }
 
-    // MARK: - Sales Endpoints
+    // MARK: - Sales
+
+    app.get("sales") { req async throws -> [SaleRecord] in
+        try await salesStore.load()
+    }
+
     app.post("sales") { req async throws -> HTTPStatus in
         let sales = try req.content.decode([SaleRecord].self)
         try await salesStore.save(sales)
         print("🧾 Saved \(sales.count) sales to file")
         return .ok
-    }
-
-    app.get("sales") { req async throws -> [SaleRecord] in
-        try await salesStore.load()
     }
 }
